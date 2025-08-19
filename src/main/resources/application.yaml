@@ -1,0 +1,73 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 20MB
+  ai:
+    vectorstore:
+      redis:
+        initialize-schema: true
+        index-name: amst-ai-index
+        prefix: doc
+    deepseek:
+      chat:
+        options:
+          model: deepseek-chat
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com
+    chat:
+      memory:
+        repository:
+          jdbc:
+            # 第一次运行，参数用 always
+            initialize-schema: embedded
+            platform: mariadb
+    openai:
+      embedding:
+        options:
+          model: text-embedding-v4
+          dimensions: 1024
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: qwen-max-latest
+          # 多模态模型
+          multi-modal: qwen-omni-turbo-2025-03-26
+          temperature: 0.8
+
+  data:
+    redis:
+      url: redis://${REDIS_HOST}:6336
+      password: ${REDIS_PASSWORD}
+
+  application:
+    name: amst-ai
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST}:3344/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&allowPublicKeyRetrieval=true&useSSL=false&allowLoadLocalInfile=true
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      max-lifetime: 2000000
+      connection-timeout: 30000
+
+logging:
+  level:
+    org.springframework.ai: DEBUG
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.amst.ai.entity
