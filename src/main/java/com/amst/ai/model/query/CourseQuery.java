@@ -1,4 +1,4 @@
-package com.amst.ai.entity.query;
+package com.amst.ai.model.query;
 
 
 import lombok.Data;

@@ -1,5 +1,5 @@
 package com.amst.ai.service.impl;
-import com.amst.ai.entity.CourseEntity;
+import com.amst.ai.model.entity.CourseEntity;
 import com.amst.ai.mapper.CourseMapper;
 import com.amst.ai.service.CourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

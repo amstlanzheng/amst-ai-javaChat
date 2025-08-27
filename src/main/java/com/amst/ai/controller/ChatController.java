@@ -1,6 +1,7 @@
 package com.amst.ai.controller;
 
 import com.amst.ai.repostory.ChatHistoryRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -25,9 +26,9 @@ public class ChatController {
 
 
     @PostMapping(value = "/chat", produces = "text/html;charset=utf-8")
-    public Flux<String> chat(@RequestParam String prompt, @RequestParam  String chatId, @RequestParam(required = false) List<MultipartFile> files) {
+    public Flux<String> chat(@RequestParam String prompt, @RequestParam  String chatId, @RequestParam(required = false) List<MultipartFile> files, HttpServletRequest request) {
         //保存会话Id
-        chatHistoryRepository.save("chat",chatId);
+        chatHistoryRepository.save("chat",chatId,  request);
 
         // 创建会话
         if (CollectionUtils.isEmpty( files)){

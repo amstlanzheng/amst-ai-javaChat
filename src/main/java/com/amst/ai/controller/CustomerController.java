@@ -1,6 +1,7 @@
 package com.amst.ai.controller;
 
 import com.amst.ai.repostory.ChatHistoryRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -19,9 +20,9 @@ public class CustomerController {
 
 
     @GetMapping(value = "/service", produces = "text/html;charset=utf-8")
-    public Flux<String> chat(@RequestParam String prompt, String chatId) {
+    public Flux<String> chat(@RequestParam String prompt, String chatId, HttpServletRequest request) {
         //保存会话Id
-        chatHistoryRepository.save("service",chatId);
+        chatHistoryRepository.save("service",chatId,  request);
 
         // 创建会话
         return courseChatClient.prompt()

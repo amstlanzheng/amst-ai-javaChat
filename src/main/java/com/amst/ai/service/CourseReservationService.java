@@ -1,5 +1,5 @@
 package com.amst.ai.service;
-import com.amst.ai.entity.CourseReservationEntity;
+import com.amst.ai.model.entity.CourseReservationEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 

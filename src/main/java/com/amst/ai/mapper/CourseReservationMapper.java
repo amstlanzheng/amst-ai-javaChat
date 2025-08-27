@@ -2,7 +2,7 @@ package com.amst.ai.mapper;
 
 import java.util.List;
 
-import com.amst.ai.entity.CourseReservationEntity;
+import com.amst.ai.model.entity.CourseReservationEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

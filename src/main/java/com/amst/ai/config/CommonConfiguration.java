@@ -81,12 +81,11 @@ public class CommonConfiguration {
                 .defaultSystem("根据上下文回答问题，如果上下文没有的问题请不要随意编造。")  //默认提示词
                 .defaultAdvisors(
                         new SimpleLoggerAdvisor(),//默认日志
-                        MessageChatMemoryAdvisor.builder(chatMemory).build()
-                        ,//会话记忆
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),//会话记忆
                         QuestionAnswerAdvisor.builder(vectorStore)
                                 .searchRequest(SearchRequest.builder()
-                                        .topK(1)
-                                        .similarityThreshold(0.6f)
+                                        .topK(1) //搜索数量
+                                        .similarityThreshold(0.6f)  //相似度
                                         .build()
                                 )
                                 .build()

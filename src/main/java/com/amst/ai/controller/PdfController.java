@@ -1,9 +1,10 @@
 package com.amst.ai.controller;
 
-import com.amst.ai.entity.vo.Result;
+import com.amst.ai.common.Result;
 import com.amst.ai.repostory.ChatHistoryRepository;
 import com.amst.ai.repostory.FileRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -11,7 +12,6 @@ import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvi
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.ExtractedTextFormatter;
-import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.ParagraphPdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -106,14 +105,14 @@ public class PdfController {
     }
 
     @RequestMapping("/chat")
-    public Flux<String> chat(@RequestParam("chatId") String chatId, @RequestParam("prompt") String prompt) {
+    public Flux<String> chat(@RequestParam("chatId") String chatId, @RequestParam("prompt") String prompt, HttpServletRequest request) {
         //找到会话文件
         Resource resource = fileRepository.getFile(chatId);
         if (resource == null) {
             return Flux.just("请先上传PDF文件！");
         }
         // 1.保存会话内容
-        chatHistoryRepository.save("pdf", chatId);
+        chatHistoryRepository.save("pdf", chatId, request);
         // 2.获取会话内容
         return pdfChatClient.prompt()
                 .user(prompt)

@@ -1,10 +1,10 @@
 package com.amst.ai.controller;
 
 import com.amst.ai.repostory.ChatHistoryRepository;
-import com.amst.ai.vo.MessageVO;
+import com.amst.ai.model.vo.MessageVO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +23,8 @@ public class ChatHistoryController {
     private final ChatMemory chatMemory;
 
     @GetMapping("/{type}")
-    public List<String> getChatIds(@PathVariable String type) {
-        return chatHistoryRepository.getChatIds(type);
+    public List<String> getChatIds(@PathVariable String type, HttpServletRequest request) {
+        return chatHistoryRepository.getChatIds(type,  request);
     }
 
     @GetMapping("/{type}/{chatId}")

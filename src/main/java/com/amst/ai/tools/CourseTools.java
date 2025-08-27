@@ -1,9 +1,9 @@
 package com.amst.ai.tools;
 
-import com.amst.ai.entity.CourseEntity;
-import com.amst.ai.entity.CourseReservationEntity;
-import com.amst.ai.entity.SchoolEntity;
-import com.amst.ai.entity.query.CourseQuery;
+import com.amst.ai.model.entity.CourseEntity;
+import com.amst.ai.model.entity.CourseReservationEntity;
+import com.amst.ai.model.entity.SchoolEntity;
+import com.amst.ai.model.query.CourseQuery;
 import com.amst.ai.service.CourseService;
 import com.amst.ai.service.SchoolService;
 import com.amst.ai.service.impl.CourseReservationServiceImpl;

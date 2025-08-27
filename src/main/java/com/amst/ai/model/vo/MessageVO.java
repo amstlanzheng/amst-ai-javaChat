@@ -1,4 +1,4 @@
-package com.amst.ai.vo;
+package com.amst.ai.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

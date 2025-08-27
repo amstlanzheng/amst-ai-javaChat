@@ -1,7 +1,7 @@
 package com.amst.ai.service;
 
 
-import com.amst.ai.entity.CourseEntity;
+import com.amst.ai.model.entity.CourseEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

@@ -1,7 +1,7 @@
 package com.amst.ai.service.impl;
 
 
-import com.amst.ai.entity.CourseReservationEntity;
+import com.amst.ai.model.entity.CourseReservationEntity;
 import com.amst.ai.mapper.CourseReservationMapper;
 import com.amst.ai.service.CourseReservationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
