@@ -135,6 +135,55 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return 1;
     }
+
+    @Override
+    public void updateUser(SysUser sysUser) {
+        SysUser user = this.getById(sysUser);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "用户不存在");
+        }
+        String userAccount = sysUser.getUserAccount();
+        String userPassword = sysUser.getUserPassword();
+
+        if (StringUtils.isBlank(userAccount)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号不能为空");
+        }
+        //账号不能小于4位
+
+        if (userAccount.length() < 4) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
+        }
+
+        //账号不能包含特殊字符
+        boolean matches = userAccount.matches(UserContents.VALID_PATTERN);
+        if (matches) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号包含特殊字符");
+        }
+
+        if (StringUtils.isNotBlank(userPassword)){
+            //密码不能小于8位
+            if (userPassword.length() < 8) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
+            }
+            //密码加密
+            String encryptPassword = DigestUtils.md5DigestAsHex((user.getSalt() + sysUser.getUserPassword()).getBytes());
+            sysUser.setUserPassword(encryptPassword);
+
+        }
+
+
+        //账号不能重复
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_account", userAccount).ne("id", user.getId());
+        long count = this.count(queryWrapper);
+        if (count > 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
+        }
+
+
+
+        this.updateById(sysUser);
+    }
 }
 
 

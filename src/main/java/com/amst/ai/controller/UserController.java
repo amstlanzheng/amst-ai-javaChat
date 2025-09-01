@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -117,13 +118,21 @@ public class UserController {
      * 查询用户列表
      */
     @GetMapping("/current")
-    public Result<List<SysUser>> getCurrentUser(HttpServletRequest request) {
-        SysUser sysUser = (SysUser) request.getSession().getAttribute(UserContents.USER_LOGIN_STATE);
-        if (sysUser == null) {
+    public Result<List<SysUserVO>> getCurrentUser(HttpServletRequest request) {
+        SysUser suser = (SysUser) request.getSession().getAttribute(UserContents.USER_LOGIN_STATE);
+        if (suser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN, "未登录");
         }
         List<SysUser> userList = sysUserService.list();
-        return Result.ok(userList);
+        List<SysUserVO> userVOList = userList.stream().map(sysUser -> {
+            SysUserVO sysUserVO = new SysUserVO();
+            BeanUtils.copyProperties(sysUser, sysUserVO);
+            sysUserVO.setId(sysUser.getId() + "");
+            sysUserVO.setUserRole(sysUser.getUserRole() + "");
+            sysUserVO.setGender(sysUser.getGender() + "");
+            return sysUserVO;
+        }).toList();
+        return Result.ok(userVOList);
     }
 
     /**
@@ -158,12 +167,32 @@ public class UserController {
      * 获取当前用户信息
      */
     @GetMapping("/currentUser")
-    public Result<SysUser> currentUser(HttpServletRequest request) {
+    public Result<SysUserVO> currentUser(HttpServletRequest request) {
         SysUser sysUser = (SysUser) request.getSession().getAttribute(UserContents.USER_LOGIN_STATE);
         if (sysUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN, "未登录");
         }
-        return Result.ok(sysUser);
+        SysUserVO sysUserVO = new SysUserVO();
+        BeanUtils.copyProperties(sysUser, sysUserVO);
+        sysUserVO.setId(sysUser.getId() + "");
+        sysUserVO.setUserRole(sysUser.getUserRole() + "");
+        sysUserVO.setGender(sysUser.getGender() + "");
+
+        return Result.ok(sysUserVO);
+    }
+
+
+    /**
+     * 修改
+     */
+    @PostMapping("/update")
+    public Result<String> update(@RequestBody SysUser sysUser, HttpServletRequest request) {
+        if (isNotAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH, "非管理员无权限修改");
+        }
+        sysUserService.updateUser(sysUser);
+        return Result.ok("修改成功");
+
     }
 
 

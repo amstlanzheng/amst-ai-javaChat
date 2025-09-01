@@ -40,4 +40,9 @@ public interface SysUserService extends IService<SysUser> {
      */
     Integer userLogout(HttpServletRequest request);
 
+    /**
+     * 更新用户信息
+     * @param sysUser 用户信息
+     */
+    void updateUser(SysUser sysUser);
 }

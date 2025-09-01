@@ -41,8 +41,8 @@ public class ChatController {
 
     /**
      * 多模态上传
-     * @param question
-     * @param chatId
+     * @param question  问题
+     * @param chatId 会话Id
      * @param files 文件集合
      * @return
      */
