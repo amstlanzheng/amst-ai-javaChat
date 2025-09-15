@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.amst.ai.mapper.CourseReservationMapper">
+<mapper namespace="com.amst.ai.agent.mapper.CourseReservationMapper">
 
-    <resultMap id="BaseResultMap" type="com.amst.ai.model.entity.CourseReservationEntity">
+    <resultMap id="BaseResultMap" type="com.amst.ai.agent.model.entity.CourseReservationEntity">
         <!--@Table course_reservation-->
                     <result property="id" column="id" jdbcType="INTEGER"/>
                     <result property="course" column="course" jdbcType="VARCHAR"/>

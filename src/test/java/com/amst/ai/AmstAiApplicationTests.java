@@ -1,6 +1,6 @@
 package com.amst.ai;
 
-import com.amst.ai.utils.VectorDistanceUtils;
+import com.amst.ai.common.utils.VectorDistanceUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
@@ -11,7 +11,6 @@ import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.FileSystemResource;
 
 import java.util.Arrays;
 import java.util.List;
