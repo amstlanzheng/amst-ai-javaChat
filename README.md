@@ -12,3 +12,4 @@
 1. 创建MySQL和Redis-Stack 如果没有可参照doc里面的docker-compose.yml迅速部署，但需要对服务器的性能有一定要求
 2. 在指定的数据库执行doc里面的建表sql文件create.sql
 3. 参考yml文件里面需要的参数，添加到环境变量，或者修改yml文件里面的信息，包括模型，MySQL，Redis-Stack等等
+4. 如果是第一次允许请先进入yml文件，修改参数initialize-schema: always
