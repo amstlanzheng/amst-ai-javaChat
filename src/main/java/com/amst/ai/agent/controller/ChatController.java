@@ -1,11 +1,15 @@
 package com.amst.ai.agent.controller;
 
 import com.amst.ai.agent.repostory.ChatHistoryRepository;
+import com.amst.ai.agent.tools.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.content.Media;
+import org.springframework.ai.model.tool.ToolCallingChatOptions;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +29,7 @@ public class ChatController {
 
 
 
-    @PostMapping(value = "/chat", produces = "text/html;charset=utf-8")
+    @PostMapping(value = "/chat")
     public Flux<String> chat(@RequestParam String prompt, @RequestParam  String chatId, @RequestParam(required = false) List<MultipartFile> files, HttpServletRequest request) {
         //保存会话Id
         chatHistoryRepository.save("chat",chatId,  request);
@@ -74,6 +78,4 @@ public class ChatController {
                 .stream()
                 .content();
     }
-
-
 }

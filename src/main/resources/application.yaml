@@ -35,7 +35,7 @@ spring:
         options:
           model: qwen-max-latest
           # 多模态模型
-          multi-modal: qwen-omni-turbo-2025-03-26
+          multi-modal: qwen3-omni-flash
           temperature: 0.8
 
   data:
@@ -73,3 +73,8 @@ mybatis-plus:
       logic-delete-value: 1
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.amst.ai.entity
+
+# searchApi
+search-api:
+  api-key: ${SEARCH_API_KEY}
+

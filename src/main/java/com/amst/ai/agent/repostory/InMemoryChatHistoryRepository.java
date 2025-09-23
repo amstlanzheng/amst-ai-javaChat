@@ -73,7 +73,7 @@ public class InMemoryChatHistoryRepository implements ChatHistoryRepository{
 
         if (!CollectionUtils.isEmpty(list)){
             List<String> chatIds = list.stream().map(AiChatMessageType::getConversationId).toList();
-            List<AiChatMessageUser> list1 = aiChatMessageUserService.list(new QueryWrapper<AiChatMessageUser>().eq("user_id", sysUser.getId()).in("conversation_id", chatIds));
+            List<AiChatMessageUser> list1 = aiChatMessageUserService.list(new QueryWrapper<AiChatMessageUser>().eq("user_id", sysUser.getId()).in("conversation_id", chatIds).orderByDesc("id"));
             if (!CollectionUtils.isEmpty(list1)){
                 return list1.stream().map(AiChatMessageUser::getConversationId).toList();
             }

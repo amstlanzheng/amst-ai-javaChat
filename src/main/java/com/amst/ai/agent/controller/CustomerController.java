@@ -19,7 +19,7 @@ public class CustomerController {
 
 
 
-    @GetMapping(value = "/service", produces = "text/html;charset=utf-8")
+    @GetMapping(value = "/service")
     public Flux<String> chat(@RequestParam String prompt, String chatId, HttpServletRequest request) {
         //保存会话Id
         chatHistoryRepository.save("service",chatId,  request);
