@@ -32,7 +32,10 @@ public class CommonConfiguration {
     @Value("${spring.ai.openai.chat.options.multi-modal}")
     private String multiModal;
 
-    
+    @Resource
+    private ToolCallback[] allTools;
+
+
     @Bean
     public ChatMemory chatMemory() {
         return MessageWindowChatMemory.builder()
@@ -41,14 +44,7 @@ public class CommonConfiguration {
     }
 
     @Bean
-    public ChatClient chatClient(OpenAiChatModel model, ChatMemory chatMemory, 
-                                 FileOperationTool fileOperationTool,
-                                 WebSearchTool webSearchTool,
-                                 WebScrapingTool webScrapingTool,
-                                 ResourceDownloadTool resourceDownloadTool,
-                                 TerminalOperationTool terminalOperationTool,
-                                 PDFGenerationTool pdfGenerationTool,
-                                 TerminateTool terminateTool) {
+    public ChatClient chatClient(OpenAiChatModel model, ChatMemory chatMemory) {
 
         return ChatClient.builder(model)
                 .defaultSystem(SystemContents.CHAT_SYSTEM_PROMPT)
@@ -56,17 +52,27 @@ public class CommonConfiguration {
                         new SimpleLoggerAdvisor(), // 默认日志
                         MessageChatMemoryAdvisor.builder(chatMemory).build() // 会话记忆
                 )
-                .defaultTools(
-                        fileOperationTool,
-                        webSearchTool,
-                        webScrapingTool,
-                        resourceDownloadTool,
-                        terminalOperationTool,
-                        pdfGenerationTool,
-                        terminateTool
+                .defaultToolCallbacks(allTools)
+                .build();
+    }
+
+    @Bean
+    public ChatClient chatMultiClient(OpenAiChatModel model, ChatMemory chatMemory) {
+
+        ChatOptions chatOptions = ChatOptions.builder()
+                .model(multiModal)
+                .build();
+
+        return ChatClient.builder(model)
+                .defaultSystem(SystemContents.CHAT_SYSTEM_PROMPT)
+                .defaultOptions(chatOptions)
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(), // 默认日志
+                        MessageChatMemoryAdvisor.builder(chatMemory).build() // 会话记忆
                 )
                 .build();
     }
+
 
     @Bean
     public ChatClient gameChatClient(OpenAiChatModel model, ChatMemory chatMemory) {

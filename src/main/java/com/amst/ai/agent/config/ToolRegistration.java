@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author lanzhs
+ */
 @Configuration
 public class ToolRegistration {
 
@@ -21,7 +24,7 @@ public class ToolRegistration {
     
     @Bean
     public WebSearchTool webSearchTool() {
-        return new WebSearchTool();
+        return new WebSearchTool(searchApiKey);
     }
     
     @Bean
@@ -53,7 +56,7 @@ public class ToolRegistration {
     @Bean
     public ToolCallback[] allTools() {
         FileOperationTool fileOperationTool = new FileOperationTool();
-        WebSearchTool webSearchTool = new WebSearchTool();
+        WebSearchTool webSearchTool = new WebSearchTool(searchApiKey);
         WebScrapingTool webScrapingTool = new WebScrapingTool();
         ResourceDownloadTool resourceDownloadTool = new ResourceDownloadTool();
         TerminalOperationTool terminalOperationTool = new TerminalOperationTool();

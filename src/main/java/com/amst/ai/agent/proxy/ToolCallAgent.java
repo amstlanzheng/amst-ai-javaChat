@@ -63,12 +63,11 @@ public class ToolCallAgent extends ReActAgent {
             getMessageList().add(userMessage);
         }
         List<Message> messageList = getMessageList();
-        Prompt prompt = new Prompt(messageList, chatOptions);
         try {
             // 获取带工具选项的响应
-            ChatResponse chatResponse = getChatClient().prompt(prompt)
+            ChatResponse chatResponse = getChatClient()
+                    .prompt(new Prompt(messageList, chatOptions))
                     .system(getSystemPrompt())
-                    .tools(availableTools)
                     .call()
                     .chatResponse();
             // 记录响应，用于 Act

@@ -2,13 +2,16 @@ package com.amst.ai.agent.tools;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import com.amst.ai.common.utils.MinioUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -16,124 +19,70 @@ import java.util.List;
 @Component
 public class FileOperationTool {
 
-    @Tool(description = "读取指定路径的文本文件内容")
-    public String readFile(@ToolParam(description = "文件路径") String filePath) {
-        if (!StringUtils.hasText(filePath)) {
-            return "文件路径不能为空";
+    @Autowired
+    private MinioUtil minioUtil;
+
+    @Tool(description = "读取指定文件的文本文件内容")
+    public String readFile(@ToolParam(description = "文件名称") String fileName) throws Exception {
+        if (!minioUtil.exists(fileName)) {
+            return "文件不能为空";
         }
         
         try {
-            File file = new File(filePath);
-            if (!file.exists()) {
-                return "文件不存在: " + filePath;
-            }
-            
+            InputStream download = minioUtil.download(fileName);
+            File file = FileUtil.writeBytes(download.readAllBytes(), fileName);
             return FileUtil.readString(file, Charset.defaultCharset());
         } catch (Exception e) {
             return "读取文件出错: " + e.getMessage();
         }
     }
 
-    @Tool(description = "列出指定目录下的所有文件和文件夹")
-    public String listFiles(@ToolParam(description = "目录路径") String dirPath) {
-        if (!StringUtils.hasText(dirPath)) {
-            return "目录路径不能为空";
-        }
+    @Tool(description = "列出指定Minio的bucket下的所有文件和文件夹")
+    public String listFiles() {
         
         try {
-            File dir = new File(dirPath);
-            if (!dir.exists()) {
-                return "目录不存在: " + dirPath;
-            }
-            
-            if (!dir.isDirectory()) {
-                return "指定路径不是目录: " + dirPath;
-            }
-            
-            File[] files = dir.listFiles();
-            if (files == null || files.length == 0) {
-                return "目录为空: " + dirPath;
-            }
-            
-            StringBuilder result = new StringBuilder();
-            for (File file : files) {
-                result.append(file.getName());
-                if (file.isDirectory()) {
-                    result.append("/");
-                }
-                result.append("\n");
-            }
-            
+            minioUtil.checkBucketExists();
+            List<String> result = minioUtil.listFiles();
             return result.toString();
         } catch (Exception e) {
             return "列出文件出错: " + e.getMessage();
         }
     }
 
-    @Tool(description = "创建目录")
-    public String createDirectory(@ToolParam(description = "要创建的目录路径") String dirPath) {
-        if (!StringUtils.hasText(dirPath)) {
-            return "目录路径不能为空";
-        }
-        
-        try {
-            File dir = new File(dirPath);
-            if (dir.exists()) {
-                return "目录已存在: " + dirPath;
-            }
-            
-            boolean success = dir.mkdirs();
-            if (success) {
-                return "目录创建成功: " + dirPath;
-            } else {
-                return "目录创建失败: " + dirPath;
-            }
-        } catch (Exception e) {
-            return "创建目录出错: " + e.getMessage();
-        }
-    }
 
-    @Tool(description = "删除文件或目录")
-    public String deleteFileOrDirectory(@ToolParam(description = "要删除的文件或目录路径") String path) {
-        if (!StringUtils.hasText(path)) {
+    @Tool(description = "删除文件")
+    public String deleteFileOrDirectory(@ToolParam(description = "要删除的文件名称") String fileName) {
+        if (!StringUtils.hasText(fileName)) {
             return "路径不能为空";
         }
         
         try {
-            File file = new File(path);
-            if (!file.exists()) {
-                return "文件或目录不存在: " + path;
-            }
-            
-            boolean success = FileUtil.del(file);
-            if (success) {
-                return "删除成功: " + path;
-            } else {
-                return "删除失败: " + path;
-            }
+
+            minioUtil.delete(fileName);
+            return "文件删除成功";
         } catch (Exception e) {
             return "删除出错: " + e.getMessage();
         }
+
     }
 
-    @Tool(description = "写入内容到文件")
-    public String writeFile(@ToolParam(description = "文件路径") String filePath,
+    @Tool(description = "写入内容到文件并上传到MinIO，返回文件访问URL")
+    public String writeFile(@ToolParam(description = "文件名") String fileName,
                             @ToolParam(description = "要写入的内容") String content) {
-        if (!StringUtils.hasText(filePath)) {
-            return "文件路径不能为空";
+        if (!StringUtils.hasText(fileName)) {
+            return "文件名不能为空";
         }
         
         try {
-            File file = new File(filePath);
-            File parentDir = file.getParentFile();
-            if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs();
-            }
+            // 将内容转换为字节数组
+            byte[] bytes = content.getBytes(Charset.defaultCharset());
             
-            FileUtil.writeString(content, file, Charset.defaultCharset());
-            return "文件写入成功: " + filePath;
+            // 上传到MinIO并获取URL
+            String fileUrl = minioUtil.upload(bytes, fileName, "text/plain");
+            
+            return "文件上传成功，访问URL: " + fileUrl;
         } catch (Exception e) {
-            return "写入文件出错: " + e.getMessage();
+            return "上传文件到MinIO出错: " + e.getMessage();
         }
     }
 }

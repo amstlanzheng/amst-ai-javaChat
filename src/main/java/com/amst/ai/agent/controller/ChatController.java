@@ -2,6 +2,7 @@ package com.amst.ai.agent.controller;
 
 import com.amst.ai.agent.repostory.ChatHistoryRepository;
 import com.amst.ai.agent.tools.*;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
@@ -25,9 +26,13 @@ public class ChatController {
 
     private final ChatClient chatClient;
 
+    private final ChatClient chatMultiClient;
+
     private final ChatHistoryRepository chatHistoryRepository;
 
 
+    @Resource
+    private ToolCallback[] allTools;
 
     @PostMapping(value = "/chat")
     public Flux<String> chat(@RequestParam String prompt, @RequestParam  String chatId, @RequestParam(required = false) List<MultipartFile> files, HttpServletRequest request) {
@@ -64,7 +69,7 @@ public class ChatController {
                     return new Media(MimeTypeUtils.parseMimeType(mimeType), file.getResource());
                 })
                 .toList();
-        return chatClient.prompt()
+        return chatMultiClient.prompt()
                 .user(p -> p.text(question).media(media.toArray(Media[]::new)))
                 .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
                 .stream()

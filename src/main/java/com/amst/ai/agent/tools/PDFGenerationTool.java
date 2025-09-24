@@ -2,6 +2,7 @@ package com.amst.ai.agent.tools;
 
 import cn.hutool.core.io.FileUtil;
 import com.amst.ai.agent.contents.FileConstant;
+import com.amst.ai.common.utils.MinioUtil;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -12,10 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static com.amst.ai.agent.contents.FileConstant.*;
 
@@ -23,11 +26,13 @@ import static com.amst.ai.agent.contents.FileConstant.*;
 @Component
 @RequiredArgsConstructor
 public class PDFGenerationTool {
+    @Autowired
+    private MinioUtil minioUtil;
 
-    @Tool(description = "Generate a PDF file with given content")
+    @Tool(description = "根据给定内容生成PDF文件存入Minio")
     public String generatePDF(
-            @ToolParam(description = "Name of the file to save the generated PDF") String fileName,
-            @ToolParam(description = "Content to be included in the PDF") String content) {
+            @ToolParam(description = "保存生成的PDF文件的文件名") String fileName,
+            @ToolParam(description = "要包含在PDF中的内容") String content) {
         String fileDir = FILE_SAVE_DIR + "/pdf";
         String filePath = fileDir + "/" + fileName;
         try {
@@ -50,9 +55,17 @@ public class PDFGenerationTool {
                 // 添加段落并关闭文档
                 document.add(paragraph);
             }
-            return "PDF generated successfully to: " + filePath;
+            //存入minio
+            File file = new File(filePath);
+            InputStream inputStream = FileUtil.getInputStream(file);
+            minioUtil.upload(inputStream, fileName, "pdf");
+            FileUtil.del(new File(fileDir));
+            return "PDF生成成功，文件路径: " + filePath;
         } catch (IOException e) {
-            return "Error generating PDF: " + e.getMessage();
+            return "生成PDF时出错: " + e.getMessage();
+        } catch (Exception e) {
+            log.error("上传PDF文件出错: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

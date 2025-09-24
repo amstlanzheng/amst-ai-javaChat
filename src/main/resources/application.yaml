@@ -33,7 +33,7 @@ spring:
       api-key: ${OPENAI_API_KEY}
       chat:
         options:
-          model: qwen-max-latest
+          model: qwen3-max-preview
           # 多模态模型
           multi-modal: qwen3-omni-flash
           temperature: 0.8
@@ -77,4 +77,11 @@ mybatis-plus:
 # searchApi
 search-api:
   api-key: ${SEARCH_API_KEY}
+
+# MinIO配置
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:admin}
+  secret-key: ${MINIO_SECRET_KEY:admin}
+  bucket-name: ${MINIO_BUCKET_NAME:amst-ai}
 

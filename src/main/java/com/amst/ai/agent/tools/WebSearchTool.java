@@ -4,6 +4,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
@@ -20,15 +21,16 @@ import java.util.stream.Collectors;
  * @author lanzhs
  */
 @Slf4j
-@Component
+
 public class WebSearchTool {
 
     // SearchAPI 的搜索接口地址
     private static final String SEARCH_API_URL = "https://www.searchapi.io/api/v1/search";
 
-    @Value("${search-api.api-key}")
     private String searchApiKey;
-
+    public WebSearchTool(String searchApiKey) {
+        this.searchApiKey = searchApiKey;
+    }
 
     @Tool(description = """
     使用百度搜索引擎进行网络搜索。\
