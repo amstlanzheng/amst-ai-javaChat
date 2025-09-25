@@ -1,7 +1,7 @@
 package com.amst.ai.agent.proxy;
 
 import ch.qos.logback.core.util.StringUtil;
-import com.amst.ai.agent.model.entity.AgentState;
+import com.amst.ai.common.enums.AgentState;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;

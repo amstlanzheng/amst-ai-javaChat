@@ -1,4 +1,4 @@
-package com.amst.ai.agent.model.entity;
+package com.amst.ai.common.enums;
 
 /**
  * 代理执行状态的枚举类  
