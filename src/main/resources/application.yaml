@@ -6,7 +6,7 @@ spring:
       max-file-size: 100MB
       max-request-size: 20MB
   ai:
-    vectorstore:
+    vectors tore:
       redis:
         initialize-schema: true
         index-name: amst-ai-index

@@ -1,15 +1,15 @@
 package com.amst.ai.user.controller;
 
 import com.amst.ai.common.enums.ErrorCode;
-import com.amst.ai.common.result.Result;
-import com.amst.ai.user.contents.UserContents;
 import com.amst.ai.common.exception.BusinessException;
+import com.amst.ai.common.result.Result;
+import com.amst.ai.common.utils.DataUtils;
+import com.amst.ai.user.contents.UserContents;
 import com.amst.ai.user.model.entity.SysUser;
 import com.amst.ai.user.model.query.UserLoginQuery;
 import com.amst.ai.user.model.query.UserRegisterQuery;
 import com.amst.ai.user.model.vo.SysUserVO;
 import com.amst.ai.user.service.SysUserService;
-import com.amst.ai.common.utils.DataUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author lanzhs
+ */
 @RestController
 @RequestMapping("api/user")
 @Slf4j
@@ -156,10 +159,7 @@ public class UserController {
         }
         SysUser sysUser = (SysUser) attribute;
         Integer userRole = sysUser.getUserRole();
-        if (userRole != UserContents.ADMIN_ROLE) {
-            return true;
-        }
-        return false;
+        return userRole != UserContents.ADMIN_ROLE;
     }
 
     /**

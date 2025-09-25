@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +32,7 @@ public class FileOperationTool {
         try {
             InputStream download = minioUtil.download(fileName);
             File file = FileUtil.writeBytes(download.readAllBytes(), fileName);
-            return FileUtil.readString(file, Charset.defaultCharset());
+            return FileUtil.readString(file, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return "读取文件出错: " + e.getMessage();
         }
@@ -74,11 +75,11 @@ public class FileOperationTool {
         }
         
         try {
-            // 将内容转换为字节数组
-            byte[] bytes = content.getBytes(Charset.defaultCharset());
+            // 将内容转换为字节数组，使用UTF-8编码
+            byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
             
             // 上传到MinIO并获取URL
-            String fileUrl = minioUtil.upload(bytes, fileName, "text/plain");
+            String fileUrl = minioUtil.upload(bytes, fileName, "text/plain; charset=utf-8");
             
             return "文件上传成功，访问URL: " + fileUrl;
         } catch (Exception e) {

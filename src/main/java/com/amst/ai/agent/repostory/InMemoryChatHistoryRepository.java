@@ -1,5 +1,6 @@
 package com.amst.ai.agent.repostory;
 
+import com.amst.ai.agent.model.vo.MessageVO;
 import com.amst.ai.common.enums.ErrorCode;
 import com.amst.ai.user.contents.UserContents;
 import com.amst.ai.common.exception.BusinessException;

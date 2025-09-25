@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amst.ai.agent.mapper.MdFileMapper">
+
+    <resultMap type="com.amst.ai.agent.model.entity.MdFile" id="MdFileMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="conversationId" column="conversation_id" jdbcType="VARCHAR"/>
+        <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tq_mobile.md_file(file_name, conversation_id, file_id, create_time, update_time, is_deleted)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.fileName}, #{entity.conversationId}, #{entity.fileId}, #{entity.createTime}, #{entity.updateTime},
+            #{entity.isDeleted})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tq_mobile.md_file(file_name, conversation_id, file_id, create_time, update_time, is_deleted)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.fileName}, #{entity.conversationId}, #{entity.fileId}, #{entity.createTime}, #{entity.updateTime},
+            #{entity.isDeleted})
+        </foreach>
+        on duplicate key update
+        file_name = values(file_name) , conversation_id = values(conversation_id) , file_id = values(file_id) ,
+        create_time = values(create_time) , update_time = values(update_time) , is_deleted = values(is_deleted)
+    </insert>
+
+</mapper>
+

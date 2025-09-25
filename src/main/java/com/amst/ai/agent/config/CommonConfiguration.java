@@ -37,9 +37,10 @@ public class CommonConfiguration {
 
 
     @Bean
-    public ChatMemory chatMemory() {
+    public ChatMemory chatMemory(JdbcChatMemoryRepository jdbcChatMemoryRepository) {
         return MessageWindowChatMemory.builder()
                 .maxMessages(10)
+                .chatMemoryRepository(jdbcChatMemoryRepository)
                 .build();
     }
 

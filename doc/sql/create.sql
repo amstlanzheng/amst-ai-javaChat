@@ -81,6 +81,19 @@ create table if not exists sys_user
     comment '用户';
 
 
+-- 创建存放文件的表
+create table if not exists md_file
+(
+    id               bigint auto_increment comment 'id' primary key,
+    file_name        varchar(256)                       null comment '原始文件名',
+    conversation_id  varchar(36)                        null comment '用户id',
+    file_id          varchar(1024)                      null comment '文件id',
+    create_time      datetime default CURRENT_TIMESTAMP null comment '创建时间',
+    update_time      datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    is_deleted       tinyint  default 0                 not null comment '是否删除'
+    )    comment '文件';
+
+
 -- 正在导出表  itheima.course 的数据：~7 rows (大约)
 DELETE FROM `course`;
 INSERT INTO `course` (`id`, `name`, `edu`, `type`, `price`, `duration`) VALUES

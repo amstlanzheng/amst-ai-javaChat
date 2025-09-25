@@ -18,7 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
-
+.starFactory
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

@@ -242,4 +242,29 @@ public class MinioUtil {
             throw new Exception("列出文件失败", e);
         }
     }
+
+    /**
+     * 获取文件访问URL
+     *
+     * @param fileId 文件ID
+     * @return 文件访问URL
+     */
+    public String getFileURL(String fileId) {
+        // 获取文件访问URL
+        String fileURL;
+        try {
+            fileURL = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(minioConfig.getBucketName())
+                            .object(fileId)
+                            .expiry(7, TimeUnit.DAYS) // 7天有效期
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return fileURL;
+
+    }
 }
