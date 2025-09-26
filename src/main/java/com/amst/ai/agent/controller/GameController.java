@@ -17,7 +17,7 @@ public class GameController {
     private final ChatClient gameChatClient;
 
 
-    @PostMapping(value = "/game", produces = "text/html;charset=utf-8")
+    @PostMapping(value = "/game")
     public Flux<String> chat(@RequestParam String prompt, String chatId) {
 
         // 创建会话
