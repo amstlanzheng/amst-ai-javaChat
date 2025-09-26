@@ -6,7 +6,9 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AmstManus extends ToolCallAgent {
   
-    public AmstManus(ToolCallback[] allTools, ChatModel chatModel, ChatMemory chatMemory) {
+    public AmstManus(ToolCallback[] allTools, @Qualifier("openAiChatModel") OpenAiChatModel chatModel, ChatMemory chatMemory) {
         super(allTools);  
         this.setName("yuManus");  
         String SYSTEM_PROMPT = """  

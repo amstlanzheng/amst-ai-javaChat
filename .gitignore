@@ -33,3 +33,4 @@ build/
 .vscode/
 chat-pdf.properties
 HELP.md
+**/.env
