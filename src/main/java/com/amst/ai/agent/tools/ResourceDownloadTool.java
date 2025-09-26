@@ -3,6 +3,8 @@ package com.amst.ai.agent.tools;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
 import com.amst.ai.common.utils.MinioUtil;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
@@ -16,10 +18,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-@Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResourceDownloadTool {
 
-    @Autowired
     private MinioUtil minioUtil;
 
     @Tool(description = "从指定URL下载资源文件")
@@ -50,12 +52,15 @@ public class ResourceDownloadTool {
             // 上传到Minio
             File downloadedFile = new File(savePath);
             InputStream inputStream = FileUtil.getInputStream(downloadedFile);
-            String fileUrl = minioUtil.upload(inputStream, filename, "application/octet-stream");
+            minioUtil.upload(inputStream, filename, "application/octet-stream");
 
             // 删除临时文件
             FileUtil.del(downloadedFile);
 
-            return "文件下载并上传成功，访问URL: " + fileUrl;
+            // 获取可通过HTTP直接下载的Minio预签名URL
+            String downloadUrl = minioUtil.getFileUrl(filename);
+
+            return "文件下载并上传成功，访问URL: " + downloadUrl;
         } catch (Exception e) {
             return "下载文件失败: " + e.getMessage();
         }

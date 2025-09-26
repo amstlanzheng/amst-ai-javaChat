@@ -3,6 +3,8 @@ package com.amst.ai.agent.tools;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.amst.ai.common.utils.MinioUtil;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
@@ -17,10 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
-@Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class FileOperationTool {
 
-    @Autowired
     private MinioUtil minioUtil;
 
     @Tool(description = "读取指定文件的文本文件内容")
@@ -78,10 +80,13 @@ public class FileOperationTool {
             // 将内容转换为字节数组，使用UTF-8编码
             byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
             
-            // 上传到MinIO并获取URL
-            String fileUrl = minioUtil.upload(bytes, fileName, "text/plain; charset=utf-8");
+            // 上传到MinIO
+            minioUtil.upload(bytes, fileName, "text/plain; charset=utf-8");
             
-            return "文件上传成功，访问URL: " + fileUrl;
+            // 获取可通过HTTP直接下载的Minio预签名URL
+            String downloadUrl = minioUtil.getFileUrl(fileName);
+            
+            return "文件上传成功，访问URL: " + downloadUrl;
         } catch (Exception e) {
             return "上传文件到MinIO出错: " + e.getMessage();
         }

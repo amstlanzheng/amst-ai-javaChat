@@ -1,6 +1,8 @@
 package com.amst.ai.agent.config;
 
 import com.amst.ai.agent.tools.*;
+import com.amst.ai.common.utils.MinioUtil;
+import jakarta.annotation.Resource;
 import org.springframework.ai.support.ToolCallbacks;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,9 @@ public class ToolRegistration {
 
     @Value("${search-api.api-key}")
     private String searchApiKey;
+
+    @Resource
+    private MinioUtil minioUtil;
 
 
     @Bean
@@ -44,7 +49,7 @@ public class ToolRegistration {
     
     @Bean
     public PDFGenerationTool pdfGenerationTool() {
-        return new PDFGenerationTool();
+        return new PDFGenerationTool(minioUtil);
     }
     
     @Bean
@@ -55,12 +60,12 @@ public class ToolRegistration {
 
     @Bean
     public ToolCallback[] allTools() {
-        FileOperationTool fileOperationTool = new FileOperationTool();
+        FileOperationTool fileOperationTool = new FileOperationTool(minioUtil);
         WebSearchTool webSearchTool = new WebSearchTool(searchApiKey);
         WebScrapingTool webScrapingTool = new WebScrapingTool();
-        ResourceDownloadTool resourceDownloadTool = new ResourceDownloadTool();
+        ResourceDownloadTool resourceDownloadTool = new ResourceDownloadTool(minioUtil);
         TerminalOperationTool terminalOperationTool = new TerminalOperationTool();
-        PDFGenerationTool pdfGenerationTool = new PDFGenerationTool();
+        PDFGenerationTool pdfGenerationTool = new PDFGenerationTool(minioUtil);
         return ToolCallbacks.from(
                 fileOperationTool,
                 webSearchTool,
