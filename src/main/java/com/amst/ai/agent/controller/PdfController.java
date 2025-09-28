@@ -131,17 +131,11 @@ public class PdfController {
         }
         // 1.保存会话内容
         chatHistoryRepository.save("md", chatId, request);
-        // 2.获取会话内容
-        String filename = resource.getFilename();
-        String filterExpression = filename != null ? "file_name == '" + filename + "'" : null;
+        // 2.直接使用pdfChatClient，不添加过滤表达式
         return pdfChatClient.prompt()
                 .user(prompt)
                 .advisors(advisor -> advisor.param(ChatMemory.CONVERSATION_ID, chatId))
-                .advisors(a -> {
-                    if (filterExpression != null) {
-                        a.param(QuestionAnswerAdvisor.FILTER_EXPRESSION, filterExpression);
-                    }
-                })
+
                 .stream()
                 .content();
     }

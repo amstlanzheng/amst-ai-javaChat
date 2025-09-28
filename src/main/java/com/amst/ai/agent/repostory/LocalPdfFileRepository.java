@@ -64,7 +64,9 @@ public class LocalPdfFileRepository implements FileRepository {
         // 存入数据库
         final MdFile mdFile = new MdFile();
         mdFile.setConversationId(chatId);
-        mdFile.setFileName(filenameOrigin);
+        //去掉除了中英文后缀外所有的特殊字符
+        assert filenameOrigin != null;
+        mdFile.setFileName(filenameOrigin.replaceAll("[^a-zA-Z0-9\\u4e00-\\u9fa5]", ""));
         mdFile.setFileId(filename);
         mdFile.insertOrUpdate();
         
