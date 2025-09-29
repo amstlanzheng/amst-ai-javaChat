@@ -59,10 +59,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         //校验邀请码
         if (!planetCode.equals(UserContents.INVITE_CODE)){
             //没有特殊邀请码，查询用户邀请码
-            long planet_code = this.count(new QueryWrapper<SysUser>().eq("planet_code", planetCode));
-            if (planet_code <= 0){
-                throw new BusinessException(ErrorCode.PARAMS_ERROR, "邀请码错误");
-            }
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "邀请码错误");
         }
 
 

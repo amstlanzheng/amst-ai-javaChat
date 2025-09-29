@@ -24,6 +24,6 @@ public interface UserContents {
     /**
      * 邀请码（暂时写死）
      */
-    String INVITE_CODE = "Icarus";
+    String INVITE_CODE = "Sisyphus' Determination";
 
 }
