@@ -87,6 +87,8 @@ public class LocalPdfFileRepository implements FileRepository {
             return null;
         }
         try {
+            //检查minio链接
+            minioUtil.checkBucketExists();
             InputStream download = minioUtil.download(list.getFirst().getFileId());
             // 将InputStream转换为字节数组以支持多次读取
             byte[] bytes = download.readAllBytes();

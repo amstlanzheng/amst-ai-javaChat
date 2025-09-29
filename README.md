@@ -15,6 +15,7 @@
 3. 参考yml文件里面需要的参数，添加到环境变量，或者修改yml文件里面的信息，包括模型，MySQL，Redis-Stack等等
 4. 如果是第一次运行，请先进入yml文件，修改参数initialize-schema: always
 5. 如果DockerFile启动，需要修改doc文件夹下[.env-example](doc/docker/.env-example)内容，重命名为.evn，将[Dockerfile](doc/docker/Dockerfile),[.env](doc/docker/.env)和jar包放在同一目录，执行
+`docker rm -f amst-ai-app`
 `docker build -t amst-ai-app .`  
 `docker run -d --name amst-ai-app -p 8080:8080 --env-file .env amst-ai-app`
 

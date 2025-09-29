@@ -152,6 +152,9 @@ public class PdfController {
     public ResponseEntity<?> proxyMarkdownFile(@PathVariable String chatId, HttpServletRequest request) {
         try {
             Resource resource = fileRepository.getFile(chatId);
+            if (resource == null) {
+                return ResponseEntity.notFound().build();
+            }
             byte[] content = resource.getInputStream().readAllBytes();
 
             // 设置响应头
