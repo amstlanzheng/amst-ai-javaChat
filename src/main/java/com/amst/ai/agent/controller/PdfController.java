@@ -18,6 +18,8 @@ import org.springframework.ai.reader.markdown.MarkdownDocumentReader;
 import org.springframework.ai.reader.markdown.config.MarkdownDocumentReaderConfig;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -138,6 +140,33 @@ public class PdfController {
 
                 .stream()
                 .content();
+    }
+
+    /**
+     * 代理Markdown文件
+     * @param chatId
+     * @param request
+     * @return
+     */
+    @GetMapping("/proxy/{chatId}")
+    public ResponseEntity<?> proxyMarkdownFile(@PathVariable String chatId, HttpServletRequest request) {
+        try {
+            Resource resource = fileRepository.getFile(chatId);
+            byte[] content = resource.getInputStream().readAllBytes();
+
+            // 设置响应头
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_TYPE, "text/markdown; charset=utf-8");
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + chatId + ".md\"");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(content);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }
